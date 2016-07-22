@@ -203,9 +203,14 @@ RCT_EXPORT_METHOD(mediaStreamRelease:(nonnull NSNumber *)streamID)
   }
 }
 - (RTCMediaConstraints *)defaultMediaStreamConstraints {
+    RTCPair *maxWidth = [[RTCPair alloc] initWithKey:@"maxWidth" value:@"480"];
+    RTCPair *maxHeight = [[RTCPair alloc] initWithKey:@"maxHeight" value:@"320"];
+    RTCPair *maxFrameRate = [[RTCPair alloc] initWithKey:@"maxFrameRate" value:@"15"];//doesn't work.
+    //RTCPair *maxWidth = [[RTCPair alloc] initWithKey:@"maxWidth" value:@"640"];
+    //RTCPair *maxHeight = [[RTCPair alloc] initWithKey:@"maxHeight" value:@"480"];
   RTCMediaConstraints* constraints =
   [[RTCMediaConstraints alloc]
-   initWithMandatoryConstraints:nil
+   initWithMandatoryConstraints:@[maxWidth,maxHeight]
    optionalConstraints:nil];
   return constraints;
 }
