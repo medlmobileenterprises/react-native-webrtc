@@ -98,7 +98,7 @@ export default class RTCPeerConnection extends EventTarget(PEER_CONNECTION_EVENT
   }
 
   createOffer(success: ?Function, failure: ?Function, constraints) {
-    WebRTCModule.peerConnectionCreateOffer(this._peerConnectionId, (successful, data) => {
+    WebRTCModule.peerConnectionCreateOffer(this._peerConnectionId, constraints, (successful, data) => {
       if (successful) {
         const sessionDescription = new RTCSessionDescription(data);
         success(sessionDescription);

@@ -81,7 +81,16 @@ RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID callbac
   if (!peerConnection) {
     return;
   }
-
+    RTCMediaConstraints* TheConstraints = nil;
+    if ([[constraints allKeys] containsObject:@"mandatory"]) {
+        NSMutableArray *rtcPairs = [NSMutableArray new];
+        NSDictionary *mandatoryConstraints = constraints[@"mandatory"];
+        [mandatoryConstraints enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            BOOL value = [obj boolValue];
+            [rtcPairs addObject:[[RTCPair alloc] initWithKey:key value:(value ? @"true" : @"false")]];
+        }];
+        TheConstraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:rtcPairs optionalConstraints:nil];
+    }
   [peerConnection createOfferWithCallback:^(RTCSessionDescription *sdp, NSError *error) {
     if (error) {
       callback(@[@(NO),
@@ -91,7 +100,7 @@ RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID callbac
       callback(@[@(YES), @{@"sdp": sdp.description, @"type": sdp.type}]);
     }
 
-  } constraints:nil];
+  } constraints:theConstraints];
 }
 
 - (RTCMediaConstraints *)defaultAnswerConstraints {
