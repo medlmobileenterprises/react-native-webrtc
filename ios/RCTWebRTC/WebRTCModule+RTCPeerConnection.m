@@ -75,7 +75,7 @@ RCT_EXPORT_METHOD(peerConnectionRemoveStream:(nonnull NSNumber *)streamID object
 }
 
 
-RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID constraints:(NSDictionary *)constraints callback:(RCTResponseSenderBlock)callback)
 {
   RTCPeerConnection *peerConnection = self.peerConnections[objectID];
   if (!peerConnection) {
@@ -100,7 +100,7 @@ RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID callbac
       callback(@[@(YES), @{@"sdp": sdp.description, @"type": sdp.type}]);
     }
 
-  } constraints:theConstraints];
+  } constraints:TheConstraints];
 }
 
 - (RTCMediaConstraints *)defaultAnswerConstraints {
