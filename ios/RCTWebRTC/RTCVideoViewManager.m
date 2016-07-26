@@ -40,6 +40,9 @@ RCT_EXPORT_MODULE()
 {
   UIView *v = [[RTCEAGLVideoView alloc] init];
   v.clipsToBounds = YES;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAudioRouteChangeNotification:) name:AVAudioSessionRouteChangeNotification object:nil];
+
   return v;
 }
 
@@ -63,8 +66,22 @@ RCT_CUSTOM_VIEW_PROPERTY(streamURL, NSNumber, RTCEAGLVideoView)
 //      }
 //      view.currentRenderer = localVideoTrack;
       [localVideoTrack addRenderer:view];
+
+      [AVAudioSession.sharedInstance overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
     }
   }
 }
+- (void)handleAudioRouteChangeNotification:(NSNotification *)notification {
+    AVAudioSessionRouteDescription *routeDescription = [notification.userInfo objectForKey:AVAudioSessionRouteChangePreviousRouteKey];
+    for (AVAudioSessionPortDescription *outputPort in routeDescription.outputs) {
+        if ([outputPort.portType isEqualToString:AVAudioSessionPortHeadphones]) {
+            [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+            break;
+        }
+    }
+}
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 @end
